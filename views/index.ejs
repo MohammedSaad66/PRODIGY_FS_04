@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-Time Chat</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+    #chat-box { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; background: #fff; }
+    input { padding: 10px; width: 80%; }
+    button { padding: 10px; }
+  </style>
+</head>
+<body>
+  <h2>💬 Real-Time Chat</h2>
+  <div id="chat-box"></div>
+
+  <form id="chat-form">
+    <input id="message" autocomplete="off" placeholder="Type a message..." />
+    <button>Send</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('message');
+    const chatBox = document.getElementById('chat-box');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('chat message', input.value);
+        input.value = '';
+      }
+    });
+
+    socket.on('chat message', function (msg) {
+      const item = document.createElement('div');
+      item.textContent = msg;
+      chatBox.appendChild(item);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  </script>
+</body>
+</html>
